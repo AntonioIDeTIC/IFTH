@@ -80,7 +80,7 @@ def main():
             # print(batch)
             # Load 8-bit images for processing (resize to 640x640) excluding certain cameras and missing images
             _8bit_images = [
-                cv2.resize(cv2.imread(os.path.join(img_path, img), cv2.IMREAD_UNCHANGED), (640, 640), interpolation=cv2.INTER_LINEAR)
+                cv2.resize(cv2.imread(os.path.join(img_path, img), cv2.IMREAD_UNCHANGED), (640, 480), interpolation=cv2.INTER_LINEAR)
                 for img in batch
                 if "_missing" not in img and excluded_cameras[0] not in img and excluded_cameras[1] not in img
             ]
@@ -89,7 +89,7 @@ def main():
             # Load corresponding 16-bit TIFF images for processing, same resizing, and exclusion logic
             _16bit_images = [
                 cv2.resize(cv2.imread(os.path.join(img_path.replace('images', 'tiff_images'), img.replace('.jpeg', '.tiff')), cv2.IMREAD_UNCHANGED), 
-                (640, 640), interpolation=cv2.INTER_LINEAR)
+                (640, 480), interpolation=cv2.INTER_LINEAR)
                 for img in batch
                 if "_missing" not in img and excluded_cameras[0] not in img and excluded_cameras[1] not in img
             ]
