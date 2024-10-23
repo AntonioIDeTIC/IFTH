@@ -12,7 +12,7 @@ def main():
 
     
     model_path = os.path.join('..', "models/yolo11_n/weights/best.pt")
-    dataset_path = os.path.join('..', "datasets/FLAME-T/Point D/")
+    dataset_path = os.path.join('..', "datasets/FLAME-T/Point E/")
 
 
     core_detector = TA_detector.CoreDetector(model_path, conf=0.01)

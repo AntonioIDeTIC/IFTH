@@ -21,7 +21,7 @@ All the code necessary to replicate our work is available in this repository. Th
   
 ## 🚀 Code
 <p align="justify">
-The functions developed in this work can be found in the code folder. The utils.py file implements basic functions such as the IoU calculation used in this work, as well as the preprocessing routine. 
+The functions developed in this work can be found in the code folder. The utils.py file implements basic functions such as the IoU calculation used in this work, as well as the preprocessing routine. Take into account that the FLAME-T dataset must be downloaded and inside the "datasets" folder to run the example.
 </p>
 
 <p align="justify">
@@ -29,7 +29,7 @@ The segment_example.py file shows an example of image segmentation. The result s
 </p>
 
 <p align="center" width="100%">
-    <img width="100%" src="images/segment_example.svg"> 
+    <img width="100%" src="images/output_example.png"> 
 </p>
 
 ##  BibTeX
