@@ -9,7 +9,7 @@ It should be noted that the FLIR and $M{^3}FD$ images are open access and can be
 
 ## 💻 Materials
 <p align="justify">
-All the code necessary to replicate our work is available in this repository. The datasets are available via Mendeley Data. For the Nvidia Jetson Nano, we used the docker image available at: [Ultralytics][https://docs.ultralytics.com/es/guides/nvidia-jetson/#quick-start-with-docker]
+All the code necessary to replicate our work is available in this repository. The datasets are available via Mendeley Data. For the Nvidia Jetson Nano, we used the docker image available at [Ultralytics](https://docs.ultralytics.com/es/guides/nvidia-jetson/#quick-start-with-docker)
 </p>
 
 ## 🔧 Dependencies and Installation 
