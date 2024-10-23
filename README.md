@@ -4,12 +4,12 @@ This is the official repository of "Integrated Framework for Fire Detection and 
 </p>
 
 <p align="justify"> 
-It should be noted that the FLIR, $M{^3}FD$, and PID images are open access and can be downloaded from the links provided in the paper. The annotations made respect the original name of these images, only an identifier has been added to each after the original name.
+It should be noted that the FLIR and $M{^3}FD$ images are open access and can be downloaded from the links provided in the paper. The annotations made respect the original name of these images.
 </p>
 
 ## 💻 Materials
 <p align="justify">
-All the data necessary to replicate our work is available in this repository.
+All the code necessary to replicate our work is available in this repository. The datasets are available via Mendeley Data.
 </p>
 
 ## 🔧 Dependencies and Installation 
