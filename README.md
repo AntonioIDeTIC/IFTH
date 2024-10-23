@@ -34,7 +34,7 @@ The test_framework.py file shows an example of thermal anomaly detection and fir
 </p>
 
 <p align="center" width="100%">
-    <img width="100%" src="images/output_example.png"> 
+    <img width="100%" src="images/output_example_2.png"> 
 </p>
 
 ##  BibTeX
