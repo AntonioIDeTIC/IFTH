@@ -26,7 +26,7 @@ All the code necessary to replicate our work is available in this repository. Th
 
 ## 🚀 Code
 <p align="justify">
-The functions developed in this work can be found in the code folder. The utils.py file implements basic functions such as the IoU calculation used in this work, as well as the preprocessing routine. Take into account that the FLAME-T dataset must be downloaded and inside the "datasets" folder to run the example.
+The functions developed in this work can be found in the code folder. The utils.py, metrics.py, and TA_detector.py files implement basic functions used in this work (IoU, mAP, F1, NMS algorithm, etc.), as well as the thermal anomalies detectors and the proposed identification algorithm. Take into account that the FLAME-T dataset must be downloaded and inside the "datasets" folder to run the example.
 </p>
 
 <p align="justify">
