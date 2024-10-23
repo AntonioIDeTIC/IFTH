@@ -188,7 +188,6 @@ def main():
             spacing = np.zeros((height, 40, 3), dtype=np.uint8)  # Create a 20px wide black strip with the same height
             # Concatenate images with the blank space in between
             visual = cv2.hconcat([nms_img, spacing, variance_valid_img])  # Merge with spacing
-            cv2.imwrite("output_example.png", visual)
             # Show the final merged window
             cv2.imshow("Detections", visual)
 
