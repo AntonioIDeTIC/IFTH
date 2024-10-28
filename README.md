@@ -30,7 +30,7 @@ The functions developed in this work can be found in the code folder. The utils.
 </p>
 
 <p align="justify">
-The data augmentation process implemented in this work builds upon the methods developed by  <a href="https://github.com/muhammad-faizan-122/yolo-data-augmentation" target="_blank">muhammad-faizan-122</a>, whose repository provides a code example using the Almbumentations library.
+The data augmentation process implemented in this work builds upon the methods developed by  <a href="https://github.com/muhammad-faizan-122/yolo-data-augmentation" target="_blank">muhammad-faizan-122</a>, whose repository provides a code example using the Almbumentations library. The main.py and utils.py given in this repository are modifications from his original code.
 </p>
 
 <p align="justify">
