@@ -9,7 +9,7 @@ It should be noted that the FLIR and $M{^3}FD$ images are open access and can be
 
 ## 💻 Materials
 <p align="justify"> 
-All the code necessary to replicate our work is available in this repository. The datasets are available via Mendeley data at <a href="https://data.mendeley.com/drafts/x6gty88k4f" target="_blank">FLAME-T</a> . For the Nvidia Jetson Nano, we used the docker image available at <a href="https://docs.ultralytics.com/es/guides/nvidia-jetson/#quick-start-with-docker" target="_blank">Ultralytics</a>.
+All the code necessary to replicate our work is available in this repository. The datasets are available via Mendeley data at <a href="https://data.mendeley.com/drafts/x6gty88k4f" target="_blank">FLAME-T</a>. For the Nvidia Jetson Nano, we used the docker image available at <a href="https://docs.ultralytics.com/es/guides/nvidia-jetson/#quick-start-with-docker" target="_blank">Ultralytics</a>.
 </p>
 
 
@@ -27,6 +27,10 @@ All the code necessary to replicate our work is available in this repository. Th
 ## 🚀 Code
 <p align="justify">
 The functions developed in this work can be found in the code folder. The utils.py, metrics.py, and TA_detector.py files implement basic functions used in this work (IoU, mAP, F1, NMS algorithm, etc.), as well as the thermal anomalies detectors and the proposed identification algorithm. Take into account that the FLAME-T dataset must be downloaded and inside the "datasets" folder to run the example.
+</p>
+
+<p align="justify">
+The data augmentation process implemented in this work builds upon the methods developed by  <a href="https://github.com/muhammad-faizan-122/yolo-data-augmentation" target="_blank">muhammad-faizan-122</a>, whose repository provides a code example using the Almbumentations library.
 </p>
 
 <p align="justify">
