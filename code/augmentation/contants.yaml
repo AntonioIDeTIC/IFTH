@@ -1,0 +1,6 @@
+inp_img_pth : input/images
+inp_lab_pth : input/labels
+out_img_pth : output/images
+out_lab_pth : output/labels
+transformed_file_name : aug_out
+CLASSES : ['0']
