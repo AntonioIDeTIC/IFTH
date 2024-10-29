@@ -5,6 +5,32 @@ import utils
 import time
 import TA_detector
 
+# Add padding and labels above each image for aesthetic presentation
+def add_border_and_label(image, label, border_color=(50, 50, 50), text_color=(255, 255, 255)):
+    # Define font properties
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    font_scale = 1
+    font_thickness = 2
+
+    # Calculate text size to create space above the image
+    text_size, _ = cv2.getTextSize(label, font, font_scale, font_thickness)
+    label_height = text_size[1] + 20  # 20px padding above text
+
+    # Create a top border with the label
+    top_border = np.full((label_height, image.shape[1], 3), border_color, dtype=np.uint8)
+    
+    # Add the text label centered at the top border
+    text_x = (top_border.shape[1] - text_size[0]) // 2
+    text_y = label_height - 10  # 10px padding from the bottom of top border
+    cv2.putText(top_border, label, (text_x, text_y), font, font_scale, text_color, font_thickness, cv2.LINE_AA)
+    
+    # Concatenate the top border (with label) above the image
+    labeled_img = cv2.vconcat([top_border, image])
+
+    # Add a border around the entire image (including the label)
+    bordered_img = cv2.copyMakeBorder(labeled_img, 10, 10, 10, 10, cv2.BORDER_CONSTANT, value=border_color)
+    return bordered_img
+    
 def main():
 
     # Get the current working directory
@@ -80,7 +106,7 @@ def main():
             # print(batch)
             # Load 8-bit images for processing (resize to 640x640) excluding certain cameras and missing images
             _8bit_images = [
-                cv2.resize(cv2.imread(os.path.join(img_path, img), cv2.IMREAD_UNCHANGED), (640, 480), interpolation=cv2.INTER_LINEAR)
+                cv2.resize(cv2.imread(os.path.join(img_path, img), cv2.IMREAD_UNCHANGED), (640, 640), interpolation=cv2.INTER_LINEAR)
                 for img in batch
                 if "_missing" not in img and excluded_cameras[0] not in img and excluded_cameras[1] not in img
             ]
@@ -89,7 +115,7 @@ def main():
             # Load corresponding 16-bit TIFF images for processing, same resizing, and exclusion logic
             _16bit_images = [
                 cv2.resize(cv2.imread(os.path.join(img_path.replace('images', 'tiff_images'), img.replace('.jpeg', '.tiff')), cv2.IMREAD_UNCHANGED), 
-                (640, 480), interpolation=cv2.INTER_LINEAR)
+                (640, 640), interpolation=cv2.INTER_LINEAR)
                 for img in batch
                 if "_missing" not in img and excluded_cameras[0] not in img and excluded_cameras[1] not in img
             ]
@@ -182,22 +208,28 @@ def main():
                     id_time.append(time.time() - start)
                     utils.draw_boxes(variance_valid_img, [box], color=(0, 0, 255), label="Thermal anomaly")
             
-            
-            # # Create a blank space (black strip) between the images
-            height, width, _ = nms_img.shape  # Get the height of the images
-            spacing = np.zeros((height, 40, 3), dtype=np.uint8)  # Create a 20px wide black strip with the same height
+
+            # Apply the label and border to each image
+            nms_img_styled = add_border_and_label(nms_img, "NMS Image", border_color=(50, 50, 50))
+            variance_img_styled = add_border_and_label(variance_valid_img, "Framework Output Image", border_color=(50, 50, 50))
+
+            # Create a blank space (black strip) between the images
+            height = max(nms_img_styled.shape[0], variance_img_styled.shape[0])  # Get the max height for alignment
+            spacing = np.ones((height, 40, 3), dtype=np.uint8) * 255  # 40px wide white strip
+
             # Concatenate images with the blank space in between
-            visual = cv2.hconcat([nms_img, spacing, variance_valid_img])  # Merge with spacing
-            # Show the final merged window
+            visual = cv2.hconcat([spacing, nms_img_styled, spacing, variance_img_styled, spacing])
+            # cv2.imwrite("framework_output.png", visual)
+            # Show the final merged window with aesthetic improvements
             cv2.imshow("Detections", visual)
 
             while True:
                 # Wait for user input, check if "Q" or "Esc" is pressed
                 key = cv2.waitKey(1) & 0xFF
-                
+
                 if key == ord('q'):  # Press "Q" to skip to the next image
                     break  # Exit the inner while loop and continue to the next image in the for loop
-                
+
                 elif key == 27:  # Press "Esc" to exit the whole program (keycode 27 for "Esc")
                     cv2.destroyAllWindows()
                     exit()  # Exit the entire program
