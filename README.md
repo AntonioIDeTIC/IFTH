@@ -51,7 +51,7 @@ The test_framework.py file shows an example of thermal anomaly detection and fir
 } -->
 
 ## 📜 License
-This project is released under the GPL-3.0 license.
+This project is released under the AGPL-3.0 license.
 
 ## 📧 Contact
 If you have any questions, please email antonio.galvan@ulpgc.es.
