@@ -1,27 +1,32 @@
 # IFTH
- <p align="justify"> 
-This is the official repository of "Integrated Framework for Fire Detection and Identification Using Thermal Imaging" (recently submitted). You can find the framework implementation discussed in this repository in the article.
+<p align="justify"> 
+Welcome to the official repository for "Integrated Framework for Fire Detection and Identification Using Thermal Imaging" (recently submitted). This repository contains all the necessary resources to replicate the experiments presented in our work.
 </p>
 
 <p align="justify"> 
-It should be noted that the FLIR and $M{^3}FD$ images are open access for research purposes and can be downloaded from the links provided in the paper. The annotations respected the original name of these images.
+Note that you will need to <a href="https://docs.ultralytics.com/modes/train/" target="_blank">perform training</a> using the pre-trained models from  <a href="https://docs.ultralytics.com/models/" target="_blank">Ultralytics</a> to run this code effectively.
 </p>
 
-<p align="justify"> 
-The original terms and conditions of the <a href="https://www.flir.com/oem/adas/adas-dataset-agree/" target="_blank">FLIR ADAS Terms of Use</a> apply to the FLIR ADAS dataset. 
+## 📂 Dataset Access and Usage
+The Thermal Anomalie (TA) dataset proposed in this work use two open-access image datasets for research purposes: the FLIR ADAS, and the TarDAL $M{^3}FD$. To replicate the results of this project, please download these datasets and merge them with our provided images and labels. References for downloading and citing the datasets can be found in the paper. Each image annotation retains its original naming convention to ensure consistency.
 </p>
 
-<p align="justify"> 
-The original terms and conditions of the <a href="https://github.com/JinyuanLiu-CV/TarDAL" target="_blank">TarDAL</a> apply to the $M{^3}FD$ dataset. 
-</p>
+
+### Terms and Conditions
+* FLIR ADAS Dataset: Refer to the <a href="https://www.flir.com/oem/adas/adas-dataset-agree/" target="_blank">FLIR ADAS Terms of Use</a> for conditions on FLIR ADAS data usage.
+* TarDAL ($M{^3}FD$) Dataset: Use of the $M{^3}FD$ dataset is subject to the <a href="https://github.com/JinyuanLiu-CV/TarDAL" target="_blank">TarDAL terms</a>.
+* Rest of TA dataset (captured by ourselves): Use of this dataset is subject under <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0 license terms</a>.
+* FLAME-T dataset: Use of this dataset is subject under <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0 license terms</a>.
 
 ## 💻 Materials
-<p align="justify"> 
-All the code necessary to replicate our work is available in this repository. The datasets are available via Mendeley data at <a href="https://data.mendeley.com/drafts/x6gty88k4f" target="_blank">FLAME-T</a>. 
+<p align="justify"> The proposed FLAME-T dataset is available in the Mendeley data repository: <a href="https://data.mendeley.com/drafts/x6gty88k4f" target="_blank">FLAME-T</a>. Before running the provided examples, ensure that the dataset folder is included within this repository.
+</p> 
+
+<p align="justify"> We have uploaded all images and labels for the TA dataset images captured by ourselves, while only the labels for the other open-access datasets are included. To obtain the respective images for these datasets, please refer to the original download links. 
 </p>
 
 <p align="justify"> 
-The Nvidia Jetson Nano study carried out in this work was possible thanks to the docker image available at <a href="https://docs.ultralytics.com/es/guides/nvidia-jetson/#quick-start-with-docker" target="_blank">Ultralytics</a>.
+The Nvidia Jetson Nano study carried out in this work was possible thanks to the docker image available at <a href="https://docs.ultralytics.com/es/guides/nvidia-jetson/#quick-start-with-docker" target="_blank">Ultralytics</a>. The <a href="https://docs.ultralytics.com/modes/export/" target="_blank">model export format</a> was also possible thanks to the official implementation made by Ultralytics.
 </p>
 
 ## 🔧 Dependencies and Installation 
@@ -34,7 +39,7 @@ The Nvidia Jetson Nano study carried out in this work was possible thanks to the
 * tabulate == 0.9.0
 * colorama == 0.4.6
 
-## 🚀 Code
+## 🚀 Code Overview
 <p align="justify">
 The methods developed in this work can be found in the code folder. The utils.py, metrics.py, and TA_detector.py files implement state-of-the-art algorithms used in this work (IoU, mAP, F1, NMS algorithm, etc.), as well as the thermal anomalies detectors and the proposed identification algorithm. To run the example, the FLAME-T dataset must be downloaded and inside the "datasets" folder.
 </p>
