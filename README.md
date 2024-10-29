@@ -4,7 +4,15 @@ This is the official repository of "Integrated Framework for Fire Detection and 
 </p>
 
 <p align="justify"> 
-It should be noted that the FLIR and $M{^3}FD$ images are open access and can be downloaded from the links provided in the paper. The annotations respected the original name of these images.
+It should be noted that the FLIR and $M{^3}FD$ images are open access for research purposes and can be downloaded from the links provided in the paper. The annotations respected the original name of these images.
+</p>
+
+<p align="justify"> 
+The original terms and conditions of the <a href="https://www.flir.com/oem/adas/adas-dataset-agree/" target="_blank">FLIR ADAS Terms of Use</a> apply to the FLIR ADAS dataset. 
+</p>
+
+<p align="justify"> 
+The original terms and conditions of the <a href="https://github.com/JinyuanLiu-CV/TarDAL" target="_blank">TarDAL</a> apply to the $M{^3}FD$ dataset. 
 </p>
 
 ## 💻 Materials
