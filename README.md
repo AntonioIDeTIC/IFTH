@@ -1,18 +1,16 @@
 # IFTH
  <p align="justify"> 
-This is the official repository of "Integrated Framework for Fire Detection and Identification Using Thermal Imaging" (recently submitted). In this repository, you can find all the annotations discussed in the article, in addition to the images that have been proposed by the team.
+This is the official repository of "Integrated Framework for Fire Detection and Identification Using Thermal Imaging" (recently submitted). You can find the framework implementation discussed in this repository in the article.
 </p>
 
 <p align="justify"> 
-It should be noted that the FLIR and $M{^3}FD$ images are open access and can be downloaded from the links provided in the paper. The annotations made respect the original name of these images.
+It should be noted that the FLIR and $M{^3}FD$ images are open access and can be downloaded from the links provided in the paper. The annotations respected the original name of these images.
 </p>
 
 ## 💻 Materials
 <p align="justify"> 
-All the code necessary to replicate our work is available in this repository. The datasets are available via Mendeley data at <a href="https://data.mendeley.com/drafts/x6gty88k4f" target="_blank">FLAME-T</a>. For the Nvidia Jetson Nano, we used the docker image available at <a href="https://docs.ultralytics.com/es/guides/nvidia-jetson/#quick-start-with-docker" target="_blank">Ultralytics</a>.
+All the code necessary to replicate our work is available in this repository. The datasets are available via Mendeley data at <a href="https://data.mendeley.com/drafts/x6gty88k4f" target="_blank">FLAME-T</a>. Take into account that we used the docker image available at <a href="https://docs.ultralytics.com/es/guides/nvidia-jetson/#quick-start-with-docker" target="_blank">Ultralytics</a> for the Nvidia Jetson Nano study carried out.
 </p>
-
-
 
 ## 🔧 Dependencies and Installation 
 * Python == 3.10.8
@@ -26,7 +24,7 @@ All the code necessary to replicate our work is available in this repository. Th
 
 ## 🚀 Code
 <p align="justify">
-The functions developed in this work can be found in the code folder. The utils.py, metrics.py, and TA_detector.py files implement basic functions used in this work (IoU, mAP, F1, NMS algorithm, etc.), as well as the thermal anomalies detectors and the proposed identification algorithm. Take into account that the FLAME-T dataset must be downloaded and inside the "datasets" folder to run the example.
+The methods developed in this work can be found in the code folder. The utils.py, metrics.py, and TA_detector.py files implement state-of-the-art algorithms used in this work (IoU, mAP, F1, NMS algorithm, etc.), as well as the thermal anomalies detectors and the proposed identification algorithm. To run the example, the FLAME-T dataset must be downloaded and inside the "datasets" folder.
 </p>
 
 <p align="justify">
