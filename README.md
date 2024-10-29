@@ -36,7 +36,7 @@ The data augmentation process implemented in this work builds upon the methods d
 </p>
 
 <p align="justify">
-The test_framework.py file shows an example of thermal anomaly detection and fire identification. The result shows with a red color the class corresponding to thermal anomalies, and with a green color the identified fire.
+The test_framework.py file shows an example of thermal anomaly detection and fire identification. The result shows with red color the class corresponding to thermal anomalies, and with green color the identified fire.
 </p>
 
 <p align="center" width="100%">
