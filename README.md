@@ -8,15 +8,15 @@ Note that you will need to <a href="https://docs.ultralytics.com/modes/train/" t
 </p>
 
 ## 📂 Dataset Access and Usage
-The Thermal Anomalie (TA) dataset proposed in this work for YOLO training stage use two open-access image datasets for research purposes: the FLIR ADAS, and the TarDAL $M{^3}FD$. To replicate the results of this project, please download these datasets and merge them with our provided images and labels. References for downloading and citing the datasets can be found in the paper. Each image annotation retains its original naming convention to ensure consistency. On the other hand, the Fire’s Latent Activity Monitoring and Evaluation through Thermography (FLAME-T) dataset is completly acquired by our research team. 
+The Thermal Anomalie (TA) dataset proposed in this work for YOLO training stage use some image pairs of two open-access datasets for research purposes: the FLIR ADAS, and the TarDAL $M{^3}FD$. To replicate the results of this project, please download these datasets and merge them with our provided images and labels. References for downloading and citing the datasets can be found in the paper. All image annotation made by this research team retains their original naming convention to ensure consistency. On the other hand, the Fire’s Latent Activity Monitoring and Evaluation through Thermography (FLAME-T) dataset is completly acquired by our research team. 
 </p>
 
 
 ### Terms and Conditions
 * FLIR ADAS Dataset: Refer to the <a href="https://www.flir.com/oem/adas/adas-dataset-agree/" target="_blank">FLIR ADAS Terms of Use</a> for conditions on FLIR ADAS data usage.
-* TarDAL ($M{^3}FD$) Dataset: Use of the $M{^3}FD$ dataset is subject to the <a href="https://github.com/JinyuanLiu-CV/TarDAL" target="_blank">TarDAL terms</a>.
-* Rest of TA dataset (captured by ourselves): Use of this dataset is subject under <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0 license terms</a>.
-* FLAME-T dataset: Use of this dataset is subject under <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0 license terms</a>.
+* TarDAL ($M{^3}FD$) Dataset: Use of the $M{^3}FD$ dataset is subject to the <a href="https://github.com/JinyuanLiu-CV/TarDAL" target="_blank">TarDAL Terms of Use</a>.
+* Rest of TA dataset (captured by ourselves): Use of this dataset is subject under <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0 license Terms of Use</a>.
+* FLAME-T dataset: Use of this dataset is subject under <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0 license Terms of Use</a>.
 
 ## 💻 Materials
 <p align="justify"> The proposed FLAME-T dataset is available in the Mendeley data repository: <a href="https://data.mendeley.com/drafts/x6gty88k4f" target="_blank">FLAME-T</a>. Before running the provided examples, ensure that the dataset folder is included within this repository.
