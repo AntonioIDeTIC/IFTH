@@ -9,7 +9,10 @@ Note that you will need to <a href="https://docs.ultralytics.com/modes/train/" t
 
 ## 📂 Dataset Access and Usage
 <p align="justify"> 
-The Thermal Anomalies (TA) dataset proposed in this work for the YOLO training stage uses some image pairs of two open-access datasets for research purposes: the FLIR ADAS, and the TarDAL M3FD. To replicate the results of this project, please download these datasets and merge them with the images and labels we provided. References for downloading and citing the datasets can be found in the paper. All image annotation this research team makes retains their original naming convention to ensure consistency. On the other hand, our research team completely acquired the Fire’s Latent Activity Monitoring and Evaluation through Thermography (FLAME-T) dataset. 
+The Thermal Anomalies (TA) dataset proposed in this work for the YOLO training stage uses some image pairs of two open-access datasets for research purposes: the FLIR ADAS, and the TarDAL M3FD. To replicate the results of this project, please download these datasets and merge them with the images and labels we provided. References for downloading and citing the datasets can be found in the paper. All image annotation this research team makes retains their original naming convention to ensure consistency. </p>
+
+<p align="justify"> 
+On the other hand, our research team completely acquired the Fire’s Latent Activity Monitoring and Evaluation through Thermography (FLAME-T) dataset. 
 </p>
 
 
