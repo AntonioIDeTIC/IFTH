@@ -20,8 +20,8 @@ The Thermal Anomalies (TA) dataset proposed in this work for the YOLO training s
 * FLAME-T dataset: Use of this dataset is subject under <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0 license Terms of Use</a>.
 
 ## 💻 Materials
-<p align="justify"> To train the YOLO models as thermal anomaly detectors, please download the TA dataset from its Mendeley data repository: <a href="https://data.mendeley.com/drafts/pjh49p8c3r?folder=342e307c-2a66-4601-9bdc-2d7d5dbf502a" target="_blank">TA</a>. Inside the "ADAS_M3FD" folder, you will find the script <code>apply_modifications.py</code>, which must be used to recreate the synthetic thermal anomalies we generated for the respective datasets. Please ensure that each folder contains the corresponding original datasets before running the script. </p>
-<code>apply_modifications.py</code>
+<p align="justify"> To train the YOLO models as thermal anomaly detectors, please download the TA dataset from its Mendeley data repository: <a href="https://data.mendeley.com/drafts/pjh49p8c3r?folder=342e307c-2a66-4601-9bdc-2d7d5dbf502a" target="_blank">TA dataset</a>. Inside the "ADAS_M3FD" folder, you will find the script <code>apply_modifications.py</code>, which must be used to recreate the synthetic thermal anomalies we generated for the respective datasets. Please ensure that each folder contains the corresponding original datasets before running the script. </p>
+
 <p align="justify"> The proposed FLAME-T dataset is available in the Mendeley data repository: <a href="https://data.mendeley.com/drafts/x6gty88k4f" target="_blank">FLAME-T</a>. Before running the provided examples, ensure that the dataset folder is included within this repository.
 </p> 
 
@@ -44,15 +44,15 @@ The Nvidia Jetson Nano study carried out in this work was possible thanks to the
 
 ## 🚀 Code Overview
 <p align="justify">
-The methods developed in this work can be found in the code folder. The utils.py, metrics.py, and TA_detector.py files implement state-of-the-art algorithms used in this work (IoU, mAP, F1, NMS algorithm, etc.), as well as the thermal anomalies detectors and the proposed identification algorithm. To run the example, the FLAME-T dataset must be downloaded and inside the "datasets" folder.
+The methods developed in this work can be found in the code folder. The <code>utils.py</code>, <code>metrics.py</code>, and <code>TA_detector.py</code> files implement state-of-the-art algorithms used in this work (IoU, mAP, F1, NMS algorithm, etc.), as well as the thermal anomalies detectors and the proposed identification algorithm. To run the example, the FLAME-T dataset must be downloaded and inside the "datasets" folder.
 </p>
 
 <p align="justify">
-The data augmentation process implemented in this work builds upon the methods developed by  <a href="https://github.com/muhammad-faizan-122/yolo-data-augmentation" target="_blank">muhammad-faizan-122</a>, whose repository provides a code example using the Almbumentations library. The main.py and utils.py given in this repository are modifications from his original code.
+The data augmentation process implemented in this work builds upon the methods developed by  <a href="https://github.com/muhammad-faizan-122/yolo-data-augmentation" target="_blank">muhammad-faizan-122</a>, whose repository provides a code example using the Almbumentations library. The <code>main.py</code> and <code>utils.py</code> given in this repository are modifications from his original code.
 </p>
 
 <p align="justify">
-The test_framework.py file shows an example of thermal anomaly detection and fire identification. The result shows with red color the class corresponding to thermal anomalies, and with green color the identified fire.
+The <code>test_framework.py</code> file shows an example of thermal anomaly detection and fire identification. The result shows with red color the class corresponding to thermal anomalies, and with green color the identified fire.
 </p>
 
 <p align="center" width="100%">
