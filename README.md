@@ -23,13 +23,10 @@ On the other hand, our research team completely acquired the Fire’s Latent Act
 * FLAME-T dataset: Use of this dataset is subject under <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0 license Terms of Use</a>.
 
 ## 💻 Materials
-<p align="justify"> To train the YOLO models as thermal anomaly detectors, please download the TA dataset from its Mendeley data repository: <a href="https://data.mendeley.com/drafts/pjh49p8c3r?folder=342e307c-2a66-4601-9bdc-2d7d5dbf502a" target="_blank">TA dataset</a>. Inside the "ADAS_M3FD" folder, you will find the script <code>apply_modifications.py</code>, which must be used to recreate the synthetic thermal anomalies we generated for the respective datasets. Please ensure that each folder contains the corresponding original datasets before running the script. </p>
+<p align="justify"> To train the YOLO models as thermal anomaly detectors, please download the TA dataset from its Mendeley data repository: <a href="https://data.mendeley.com/drafts/pjh49p8c3r?folder=342e307c-2a66-4601-9bdc-2d7d5dbf502a" target="_blank">TA dataset</a>. We have uploaded all images and labels for the TA dataset images captured by ourselves, while only the labels for the other open-access datasets are included. Please refer to the original download links to obtain the respective images for these datasets. Inside the "ADAS_M3FD" folder, you will find the script <code>apply_modifications.py</code>, which must be used to recreate the synthetic thermal anomalies we generated for the respective datasets. Please ensure that each folder contains the corresponding original datasets before running the script. </p>
 
 <p align="justify"> The proposed FLAME-T dataset is available in the Mendeley data repository: <a href="https://data.mendeley.com/drafts/x6gty88k4f" target="_blank">FLAME-T</a>. Before running the provided examples, ensure that the dataset folder is included within this repository.
 </p> 
-
-<p align="justify"> We have uploaded all images and labels for the TA dataset images captured by ourselves, while only the labels for the other open-access datasets are included. Please refer to the original download links to obtain the respective images for these datasets. 
-</p>
 
 <p align="justify"> 
 The Nvidia Jetson Nano study carried out in this work was possible thanks to the docker image available at <a href="https://docs.ultralytics.com/es/guides/nvidia-jetson/#quick-start-with-docker" target="_blank">Ultralytics</a>. The <a href="https://docs.ultralytics.com/modes/export/" target="_blank">model export format</a> was also possible thanks to the official implementation made by Ultralytics.
