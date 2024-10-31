@@ -23,7 +23,7 @@ The Thermal Anomalies (TA) dataset proposed in this work for the YOLO training s
 <p align="justify"> The proposed FLAME-T dataset is available in the Mendeley data repository: <a href="https://data.mendeley.com/drafts/x6gty88k4f" target="_blank">FLAME-T</a>. Before running the provided examples, ensure that the dataset folder is included within this repository.
 </p> 
 
-<p align="justify"> We have uploaded all images and labels for the TA dataset images captured by ourselves, while only the labels for the other open-access datasets are included. To obtain the respective images for these datasets, please refer to the original download links. 
+<p align="justify"> We have uploaded all images and labels for the TA dataset images captured by ourselves, while only the labels for the other open-access datasets are included. Please refer to the original download links to obtain the respective images for these datasets. 
 </p>
 
 <p align="justify"> 
