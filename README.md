@@ -9,13 +9,13 @@ Note that you will need to <a href="https://docs.ultralytics.com/modes/train/" t
 
 ## 📂 Dataset Access and Usage
 <p align="justify"> 
-The Thermal Anomalies (TA) dataset proposed in this work for the YOLO training stage uses some image pairs of two open-access datasets for research purposes: the FLIR ADAS, and the TarDAL $M{^3}FD$. To replicate the results of this project, please download these datasets and merge them with the images and labels we provided. References for downloading and citing the datasets can be found in the paper. All image annotation this research team makes retains their original naming convention to ensure consistency. On the other hand, the Fire’s Latent Activity Monitoring and Evaluation through Thermography (FLAME-T) dataset is completely acquired by our research team. 
+The Thermal Anomalies (TA) dataset proposed in this work for the YOLO training stage uses some image pairs of two open-access datasets for research purposes: the FLIR ADAS, and the TarDAL M3FD. To replicate the results of this project, please download these datasets and merge them with the images and labels we provided. References for downloading and citing the datasets can be found in the paper. All image annotation this research team makes retains their original naming convention to ensure consistency. On the other hand, our research team completely acquired the Fire’s Latent Activity Monitoring and Evaluation through Thermography (FLAME-T) dataset. 
 </p>
 
 
 ### Terms and Conditions
 * FLIR ADAS Dataset: Refer to the <a href="https://www.flir.com/oem/adas/adas-dataset-agree/" target="_blank">FLIR ADAS Terms of Use</a> for conditions on FLIR ADAS data usage.
-* TarDAL ($M{^3}FD$) Dataset: Use of the $M{^3}FD$ dataset is subject to the <a href="https://github.com/JinyuanLiu-CV/TarDAL" target="_blank">TarDAL Terms of Use</a>.
+* TarDAL M3FD Dataset: Use of the M3FD dataset is subject to the <a href="https://github.com/JinyuanLiu-CV/TarDAL" target="_blank">TarDAL Terms of Use</a>.
 * Rest of TA dataset (captured by ourselves): Use of this dataset is subject under <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0 license Terms of Use</a>.
 * FLAME-T dataset: Use of this dataset is subject under <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0 license Terms of Use</a>.
 
