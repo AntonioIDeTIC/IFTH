@@ -11,6 +11,23 @@ import json
 # General Object Detection Class
 class TorchModel:
     def __init__(self, model, optimizer = None, scheduler = None, device=None, model_type = None):
+        """
+        Initialize the TorchModel object.
+
+        Parameters
+        ----------
+        model : torch.nn.Module
+            The PyTorch model to be used.
+        optimizer : torch.optim.Optimizer, optional
+            Optimizer for training the model (default is None).
+        scheduler : torch.optim.lr_scheduler, optional
+            Learning rate scheduler for the optimizer (default is None).
+        device : torch.device, optional
+            Device on which to run the model, such as 'cuda' or 'cpu' (default is auto-detect).
+        model_type : str, optional
+            The type of model, such as 'pytorch' (default is None).
+        """
+        
         self.model = model
         self.optimizer = optimizer
         self.scheduler = scheduler
@@ -20,6 +37,21 @@ class TorchModel:
         self.nms_threshold = 0.01
 
     def train(self, data_loader, num_epochs, save_path, val_loader=None):
+        """
+        Train the model for a specified number of epochs.
+
+        Parameters
+        ----------
+        data_loader : torch.utils.data.DataLoader
+            DataLoader for training data.
+        num_epochs : int
+            The number of epochs to train the model.
+        save_path : str
+            Directory path to save model weights, training logs, and evaluation data.
+        val_loader : torch.utils.data.DataLoader, optional
+            DataLoader for validation data (default is None).
+        """
+    
         os.makedirs(f"{save_path}/training_data", exist_ok=True)
         os.makedirs(f"{save_path}/images", exist_ok=True)
         os.makedirs(f"{save_path}/evaluation_data", exist_ok=True)
@@ -100,7 +132,14 @@ class TorchModel:
                 self._save_AP_model(save_path)
                 
     def load_weights(self, load_path):
-        
+        """
+        Load model weights from a specified path.
+
+        Parameters
+        ----------
+        load_path : str
+            Path to the file containing the model weights (supports both '.pth' and '.onnx' formats).
+        """
         if 'pth' in load_path:
             self.model = torch.load(f"{load_path}", weights_only=False, map_location=torch.device(self.device))
         else:
@@ -109,21 +148,34 @@ class TorchModel:
             
     def predict(self, image, conf):
         """
-        Perform inference on a single image and return predictions in YOLO format,
-        filtered by confidence score.
+        Perform inference on a single image and return predictions filtered by confidence score.
+
+        Parameters
+        ----------
+        image : numpy.ndarray or torch.Tensor
+            The input image to be used for prediction.
+        conf : float
+            The confidence threshold for filtering predictions.
+
+        Returns
+        -------
+        boxes : list
+            List of bounding boxes for detected objects.
+        classes : list
+            List of class labels for detected objects.
+        scores : list
+            List of confidence scores for detected objects.
         """
+        
         # Normalize the image
         image = self._preprocess_image(image)
-
             
         if self.model_type == 'pytorch':
             self.model.eval()
             with torch.no_grad():
-                # print(f"Image device: {image.device}, Model device: {next(self.model.parameters()).device}")
-
                 # Perform inference
                 output = self.model([image])[0]
-                # print("Inference completed.")
+
                 if not any(tensor.numel() == 0 for tensor in output.values()):
                     # Extract boxes, classes, and scores
                     boxes = np.array([box.int().cpu().numpy() for box in output['boxes']])
@@ -155,6 +207,15 @@ class TorchModel:
         return boxes, classes, scores
     
     def export_onnx(self, onnx_path):
+        """
+        Export the PyTorch model to ONNX format.
+
+        Parameters
+        ----------
+        onnx_path : str
+            File path where the ONNX model will be saved.
+        """
+        
         dummy_input = torch.randn(1, 3, 640, 640).to(self.device)
 
         # Export the model to ONNX format
@@ -167,8 +228,6 @@ class TorchModel:
             input_names=['input'],    # Input tensor name
             output_names=['boxes', 'labels', 'scores'],  # Custom output names
         )
-
-
 
     def _apply_nms(self, bboxes, classes, pscores):
         """
@@ -192,6 +251,7 @@ class TorchModel:
         final_pscores : np.ndarray
             The filtered confidence scores after applying NMS.
         """
+        
         if bboxes is None or (isinstance(bboxes, np.ndarray) and np.all(bboxes == None)):
             return np.array([]), np.array([0]), np.array([0])
     
@@ -238,14 +298,52 @@ class TorchModel:
         return bboxes[filtered].astype('int'), classes[filtered].astype('int'), pscores[filtered]           
 
     def _save_loss_model(self, save_path):
+        """
+        Save the model with the best training loss.
+
+        Parameters
+        ----------
+        save_path : str
+            Directory path to save the model weights.
+        """
         torch.save(self.model.state_dict(), f"{save_path}/best_loss_model_state_dict.pth")
         torch.save(self.model, f"{save_path}/best_loss_model_full.pth")
         
     def _save_AP_model(self, save_path):
+        """
+        Save the model with the best AP50 score.
+
+        Parameters
+        ----------
+        save_path : str
+            Directory path to save the model weights.
+        """
         torch.save(self.model.state_dict(), f"{save_path}/best_AP_model_state_dict.pth")
         torch.save(self.model, f"{save_path}/best_AP_model_full.pth")
 
     def _evaluate(self, epoch, val_loader, save_path, gt_annotations_path):
+        """
+        Evaluate the model on the validation set using COCO metrics.
+
+        Parameters
+        ----------
+        epoch : int
+            The current training epoch number.
+        val_loader : torch.utils.data.DataLoader
+            DataLoader for validation data.
+        save_path : str
+            Directory path to save evaluation results and images.
+        gt_annotations_path : str
+            Path to the ground truth annotations in COCO format.
+
+        Returns
+        -------
+        mAP : float
+            Mean Average Precision (mAP) of the model.
+        AP50 : float
+            Average Precision at IoU 0.5 of the model.
+        """
+        
         self.model.eval()
 
         results = []
@@ -317,7 +415,7 @@ class TorchModel:
             return 0, 0
 
         # Perform COCO evaluation
-        metrics = self._evaluate_with_coco(gt_annotations_path, dt_results_path, save_path, epoch)
+        metrics = self._evaluate_with_coco(gt_annotations_path, dt_results_path)
 
         print(f"Epoch [{epoch}] - mAP: {metrics['mAP']:.4f}, AP50: {metrics['AP50']:.4f}")
         
@@ -325,7 +423,25 @@ class TorchModel:
 
     def _prepare_image_for_collage(self, image, collage_size, boxes, labels, scores):
         """
-        Prepare a single image for the collage with annotations.
+        Prepare a single image for the collage with bounding boxes and annotations.
+
+        Parameters
+        ----------
+        image : torch.Tensor
+            The input image tensor.
+        collage_size : int
+            The size (height/width) for the collage image.
+        boxes : numpy.ndarray
+            Array of bounding box coordinates.
+        labels : numpy.ndarray
+            Array of class labels.
+        scores : numpy.ndarray
+            Array of confidence scores.
+
+        Returns
+        -------
+        img : numpy.ndarray
+            The processed image with annotations, resized to the collage size.
         """
         img = image.cpu().permute(1, 2, 0).numpy()  # [C, H, W] -> [H, W, C]
         img = np.clip(img * 255, 0, 255).astype(np.uint8)
@@ -342,7 +458,26 @@ class TorchModel:
         # Resize image for collage
         return cv2.resize(img, (collage_size, collage_size))
 
-    def _evaluate_with_coco(self, gt_annotations_path, dt_results_path, save_path, epoch):
+    def _evaluate_with_coco(self, gt_annotations_path, dt_results_path):
+        """
+        Perform COCO evaluation using ground truth and detection results.
+
+        Parameters
+        ----------
+        gt_annotations_path : str
+            Path to the ground truth annotations in COCO format.
+        dt_results_path : str
+            Path to the detection results file in COCO format.
+        save_path : str
+            Directory path to save evaluation results.
+        epoch : int
+            The current epoch number being evaluated.
+
+        Returns
+        -------
+        metrics : dict
+            A dictionary containing mAP and AP50 metrics.
+        """
         # Load ground truth annotations
         coco_gt = COCO(gt_annotations_path)
 
@@ -365,8 +500,19 @@ class TorchModel:
 
     def _preprocess_image(self, image):
         """
-        Normalize and preprocess the image for inference.
+        Normalize and preprocess the input image for inference.
+
+        Parameters
+        ----------
+        image : numpy.ndarray
+            The input image to be preprocessed.
+
+        Returns
+        -------
+        image : torch.Tensor or numpy.ndarray
+            The preprocessed image, formatted and normalized as required by the model.
         """
+        
         # Ensure the image is in float32 and normalize to [0, 1]
         if image.dtype != np.float32:
             image = image.astype(np.float32)
