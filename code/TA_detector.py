@@ -3,55 +3,75 @@ import time
 from skimage import measure
 import torch
 import cv2
-from ultralytics import YOLO
+from ultralytics import YOLO, RTDETR
+from torchvision.models.detection import fasterrcnn_mobilenet_v3_large_fpn
+from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
+import ObjectDetector
 
 # Main class for performing thermal anomaly detection
 class CoreDetector:
     """
-    A class used for detecting thermal anomalies using the YOLO object detection model and applying 
+    A class used for detecting thermal anomalies using the object detection model and applying 
     Non-Maximum Suppression (NMS) to refine the detected bounding boxes.
     
     Attributes
     ----------
-    model : YOLO
-        The YOLO model used for object detection.
+    model : Object Detection model
+        The model used for object detection.
     conf : float
-        The confidence threshold for YOLO detection.
+        The confidence threshold for detection.
     nms_threshold : float
         The IoU threshold for applying NMS to remove overlapping boxes.
 
     Methods
     -------
     detect_anomaly(image_batch)
-        Detects anomalies in the input image(s) using YOLO detection and NMS.
+        Detects anomalies in the input image(s) using obj detection and NMS.
     _process_image(image_batch)
         Preprocesses the input image, performs MIP operator for batch images, and normalizes 16-bit images.
-    _yolo_detection(image)
+    _ultralytics_detection(image)
         Performs object detection using YOLO and returns the bounding boxes, classes, and probabilities.
+    _torch_detection(image)
+        Performs object detection using torch implementation and returns the bounding boxes, classes, and probabilities.
     _apply_nms(bboxes, classes, pscores)
         Applies Non-Maximum Suppression (NMS) to refine bounding boxes based on IoU threshold.
     """
     
-    def __init__(self, model_path, conf, nms_threshold=0.00001):
+    def __init__(self, model_path, model_type, conf, nms_threshold=0.00001):
         """
-        Initializes the CoreDetector class with the YOLO model, confidence threshold, and NMS IoU threshold.
+        Initializes the CoreDetector class with the model, confidence threshold, and NMS IoU threshold.
         
         Parameters
         ----------
         model_path : str
-            The path to the YOLO model weights.
+            The path to the model weights.
         conf : float
-            The confidence threshold for YOLO object detection.
+            The confidence threshold for object detection.
         nms_threshold : float, optional
             The IoU threshold for Non-Maximum Suppression, by default 0.00001.
         """
-        self.model = YOLO(model_path)
+        self.model = YOLO(model_path) # YOLO CASE
+        # self.model = RTDETR(model_path) # RTDETR CASE
+
+        self.model_type = model_type
+
+        ################### Faster RCNN ################################
+        # model = fasterrcnn_mobilenet_v3_large_fpn(weights = None, num_classes=2, weights_backbone = None)
+        # # get the number of input features 
+        # in_features = model.roi_heads.box_predictor.cls_score.in_features
+        # # define a new head for the detector with required number of classes
+        # model.roi_heads.box_predictor = FastRCNNPredictor(in_features, 2)
+
+        # model = ObjectDetector.ObjectDetector(model, model_type = 'pytorch')
+        # model.load_weights('......')
+
+        
         self.conf = conf
         self.nms_threshold = nms_threshold
 
-    def detect_anomaly(self, image_batch):
+    def detect_thermal_anomaly(self, image_batch):
         """
-        Detects thermal anomalies in the input image(s) using the YOLO model and applies Non-Maximum Suppression (NMS).
+        Detects thermal anomalies in the input image(s) using the model and applies Non-Maximum Suppression (NMS).
         
         Parameters
         ----------
@@ -68,7 +88,7 @@ class CoreDetector:
             The confidence scores for each bounding box.
         prediction_time : float
             The time taken by the YOLO model to perform detection.
-        yolo_postprocessing_time : float
+        postprocessing_time : float
             The time taken to apply postprocessing such as NMS.
         image : np.ndarray
             The preprocessed input image used for detection.
@@ -78,15 +98,20 @@ class CoreDetector:
         # Preprocess image
         image = self._process_image(image_batch)
 
-        # Perform YOLO detection
-        boxes, clss, probs, prediction_time = self._yolo_detection(image)
+  
+        if self.model_type == 'YOLO' or self.model_type == 'RTDETR':
+            boxes, clss, probs, prediction_time = self._ultralytics_detection(image)
+        else:
+            boxes, clss, probs, prediction_time = self._torch_detection(image)
+
+
 
         # Apply Non-Maximum Suppression (NMS)
         final_boxes, final_classes, final_scores = self._apply_nms(boxes, clss, probs)
 
-        yolo_postprocessing_time = (time.time() - preprocessing_start) - prediction_time
+        postprocessing_time = (time.time() - preprocessing_start) - prediction_time
 
-        return final_boxes, final_classes, final_scores, prediction_time, yolo_postprocessing_time, image
+        return final_boxes, final_classes, final_scores, prediction_time, postprocessing_time, image
 
     def _process_image(self, image_batch):
         """
@@ -121,9 +146,9 @@ class CoreDetector:
 
         return image
 
-    def _yolo_detection(self, image):
+    def _ultralytics_detection(self, image):
         """
-        Performs object detection using the YOLO model on the input image.
+        Performs object detection using the YOLO or RTDETR model on the input image.
         
         Parameters
         ----------
@@ -139,10 +164,11 @@ class CoreDetector:
         probs : np.ndarray
             The confidence scores for each bounding box.
         prediction_time : float
-            The time taken by YOLO to perform the detection.
+            The time taken by the model to perform the detection.
         """
+        start = time.time()
         result = self.model.predict(image, imgsz=640, conf=self.conf, verbose=False)[0]
-        prediction_time = sum(result.speed.values()) / 1000
+        prediction_time = time.time() - start
 
         if result:
             boxes = result.boxes.xyxy.cpu().numpy()
@@ -151,6 +177,33 @@ class CoreDetector:
         else:
             boxes, clss, probs = None, None, None
 
+        return boxes, clss, probs, prediction_time
+
+    
+    def _torch_detection(self, image):
+        """
+        Performs object detection using the torch model on the input image.
+        
+        Parameters
+        ----------
+        image : np.ndarray
+            The input image to perform detection on.
+        
+        Returns
+        -------
+        boxes : np.ndarray
+            The detected bounding boxes in the image.
+        clss : np.ndarray
+            The detected classes for each bounding box.
+        probs : np.ndarray
+            The confidence scores for each bounding box.
+        prediction_time : float
+            The time taken by the model to perform the detection.
+        """
+        start = time.time()
+        boxes, clss, probs = self.model.predict(image, conf=self.conf)
+        prediction_time = time.time() - start
+        
         return boxes, clss, probs, prediction_time
 
     def _apply_nms(self, bboxes, classes, pscores):

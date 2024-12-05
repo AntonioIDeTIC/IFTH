@@ -37,11 +37,11 @@ def main():
     path = os.getcwd()
 
     
-    model_path = os.path.join('..', "models/yolo11_n/weights/best.pt")
+    model_path = os.path.join('..', "models/yolov8n/weights/best.pt")
     dataset_path = os.path.join('..', "datasets/FLAME-T/Point E/")
 
-
-    core_detector = TA_detector.CoreDetector(model_path, conf=0.01)
+    model_type = 'YOLO' # 'RTDETR' or 'Faster-RCNN'
+    core_detector = TA_detector.CoreDetector(model_path, model_type, conf=0.01)
     secondary_detector = TA_detector.SecondaryDetector()
 
     # Define the image path in the dataset
@@ -71,12 +71,6 @@ def main():
             "alpha_range_global": 0.2  
         }
     }
-
-
-    # Define ranges for margin and alpha values for each camera. This was optimized using grid search.
-    # margin_range = [10, 50, 160]
-    # alpha_range_local = [0.35, 0.25, 0.15]
-    # alpha_range_global = [0.6, 0.425, 0.2]
 
     # Loop through each target camera for the detection process
     for i, t_c in enumerate(target_cameras):
@@ -144,7 +138,7 @@ def main():
             if not _8bit_images or not _16bit_images:
                 continue
 
-            # Perform anomaly detection using the CoreDetector (YOLO-based detection model) on 8-bit images
+            # Perform anomaly detection using the CoreDetector (obj detection model) on 8-bit images
             c_d_boxes, c_d_clss, c_d_probs, c_d_prediction_time, c_d_postprocessing_time, _3d_image = core_detector.detect_anomaly(_8bit_images)
         
             # Perform secondary detection using the SecondaryDetector on 16-bit images
@@ -159,7 +153,7 @@ def main():
             # This should be used with s_d_boxes and c_d_boxes in order to get metrics such as mAP, F1, etc
             # confusion_matrix = utils.verify_detection(final_boxes, unified_label, iou_tresh = 0.5) 
             # print_confusion_matrix_one_class(confusion_matrix)
-            # Unify labels from different sources (YOLO, secondary detector) for evaluation
+            # Unify labels from different sources (core detector), secondary detector) for evaluation
             
             unified_labels = utils.unificate_labels(labels)
             
