@@ -4,13 +4,12 @@ import torch
 import numpy as np
 import cv2
 from pycocotools.coco import COCO
-import detection_utils
 from pycocotools.coco import COCO
 from pycocotools.cocoeval import COCOeval
 import json
     
 # General Object Detection Class
-class ObjectDetector:
+class TorchModel:
     def __init__(self, model, optimizer = None, scheduler = None, device=None, model_type = None):
         self.model = model
         self.optimizer = optimizer
@@ -18,7 +17,7 @@ class ObjectDetector:
         self.model_type = model_type
         self.device = device if device else torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
         self.model.to(self.device)
-
+        self.nms_threshold = 0.01
 
     def train(self, data_loader, num_epochs, save_path, val_loader=None):
         os.makedirs(f"{save_path}/training_data", exist_ok=True)
@@ -83,7 +82,7 @@ class ObjectDetector:
             print(f"Epoch [{epoch}/{num_epochs}] completed in {epoch_time:.2f} hours with avg training loss {avg_train_loss:.4f}")
 
             if val_loader is not None:
-                mAP, AP50 = self.evaluate(epoch, val_loader, save_path, f'./dataset_v3_640/valid/corrected_labels.json')
+                mAP, AP50 = self._evaluate(epoch, val_loader, save_path, f'./dataset_v3_640/valid/corrected_labels.json')
             
             if epoch == 0:
                 with open(f"{save_path}/training_data/epoch_times.csv", "a") as f:
@@ -94,20 +93,12 @@ class ObjectDetector:
                 
             if avg_train_loss < best_loss:
                 best_loss = avg_train_loss
-                self.save_loss_model(save_path)
+                self._save_loss_model(save_path)
 
             if AP50 > best_AP50:
                 best_AP50 = AP50
-                self.save_AP_model(save_path)
+                self._save_AP_model(save_path)
                 
-    def save_loss_model(self, save_path):
-        torch.save(self.model.state_dict(), f"{save_path}/best_loss_model_state_dict.pth")
-        torch.save(self.model, f"{save_path}/best_loss_model_full.pth")
-        
-    def save_AP_model(self, save_path):
-        torch.save(self.model.state_dict(), f"{save_path}/best_AP_model_state_dict.pth")
-        torch.save(self.model, f"{save_path}/best_AP_model_full.pth")
-        
     def load_weights(self, load_path):
         
         if 'pth' in load_path:
@@ -115,134 +106,14 @@ class ObjectDetector:
         else:
             import onnxruntime as ort
             self.model = ort.InferenceSession(load_path)
-
-    def evaluate(self, epoch, val_loader, save_path, gt_annotations_path):
-        self.model.eval()
-
-        results = []
-        collage_rows = []
-        max_images = 9  # Limit the collage to 9 images
-        max_images_per_row = 3  # Number of images per row
-        collage_size = 640  # Height of each image in the collage
-        black_image = np.zeros((collage_size, collage_size, 3), dtype=np.uint8)  # Placeholder for padding
-
-        with torch.no_grad():
-            image_count = 0
-            row_images = []  # Temporary holder for images in the current row
-
-            for images, targets in val_loader:
-                images = [image.to(self.device) for image in images]
-                outputs = self.model(images)
-
-                for j, output in enumerate(outputs):
-                    # Parse boxes, labels, and scores
-                    boxes = np.array([box.int().cpu().numpy() for box in output['boxes']])
-                    labels = np.array([int(label.cpu().numpy()) for label in output['labels']])
-                    scores = np.array([float(score.cpu().numpy()) for score in output['scores']])
-                    
-                    final_boxes, final_classes, final_scores = detection_utils.nms_python(boxes, labels, scores)
-                    
-                    # Collect results for COCO evaluation (processed for all images)
-                    for box, score, label in zip(final_boxes, final_scores, final_classes):
-                        results.append({
-                            "image_id": targets[j]['image_id'].item(),
-                            "category_id": int(label),
-                            "bbox": [float(box[0]), float(box[1]), float(box[2] - box[0]), float(box[3] - box[1])],
-                            "score": float(score)
-                        })
-
-                        image_count += 1
-                        
-                    # Generate collage for first few images
-                    if image_count < max_images:
-                        img = self.prepare_image_for_collage(images[j], collage_size, final_boxes, final_classes, final_scores)
-                        row_images.append(img)
-
-                        # Add row to collage if filled
-                        if len(row_images) == max_images_per_row:
-                            collage_rows.append(np.hstack(row_images))
-                            row_images = []
-
-                        image_count += 1
-
-            # Add remaining images in the row (pad if necessary)
-            if row_images and image_count <= max_images:
-                while len(row_images) < max_images_per_row:
-                    row_images.append(black_image)
-                collage_rows.append(np.hstack(row_images))
-
-            # Save collage
-            if collage_rows:
-                collage = np.vstack(collage_rows)
-                collage_save_path = f"{save_path}/images/val_epoch_{epoch}_collage.jpg"
-                cv2.imwrite(collage_save_path, collage)
-                print(f"Collage saved at: {collage_save_path}")
-
-        # Save detection results for COCO evaluation
-        dt_results_path = f"{save_path}/evaluation_data/detections_epoch_{epoch}.json"
-        with open(dt_results_path, 'w') as f:
-            json.dump(results, f, indent=4)
-        print(f"Detection results saved at: {dt_results_path}")
-
-        # Skip COCO evaluation if no detections were made
-        if len(results) == 0:
-            print(f"No detections were made during evaluation of epoch {epoch}. Skipping COCO evaluation.")
-            return 0, 0
-
-        # Perform COCO evaluation
-        metrics = self.evaluate_with_coco(gt_annotations_path, dt_results_path, save_path, epoch)
-
-        print(f"Epoch [{epoch}] - mAP: {metrics['mAP']:.4f}, AP50: {metrics['AP50']:.4f}")
-        
-        return metrics['mAP'], metrics['AP50']
-
-    def prepare_image_for_collage(self, image, collage_size, boxes, labels, scores):
-        """
-        Prepare a single image for the collage with annotations.
-        """
-        img = image.cpu().permute(1, 2, 0).numpy()  # [C, H, W] -> [H, W, C]
-        img = np.clip(img * 255, 0, 255).astype(np.uint8)
-        img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
-
-        # Draw detections on the image
-        for box, label, score in zip(boxes, labels, scores):
-            box = box.astype(int)
-            cv2.rectangle(img, (box[0], box[1]), (box[2], box[3]), (255, 0, 0), 2)
-            cv2.putText(img, f"Class: {label}, Score: {score:.2f}",
-                        (box[0], box[1] - 10), cv2.FONT_HERSHEY_SIMPLEX,
-                        0.5, (0, 255, 0), 1)
-
-        # Resize image for collage
-        return cv2.resize(img, (collage_size, collage_size))
-
-    def evaluate_with_coco(self, gt_annotations_path, dt_results_path, save_path, epoch):
-        # Load ground truth annotations
-        coco_gt = COCO(gt_annotations_path)
-
-        # Load detection results
-        coco_dt = coco_gt.loadRes(dt_results_path)
- 
-        # Initialize COCO evaluation
-        coco_eval = COCOeval(coco_gt, coco_dt, iouType='bbox')
-        coco_eval.evaluate()
-        coco_eval.accumulate()
-        coco_eval.summarize()
-
-        # Extract metrics
-        metrics = {
-            'mAP': coco_eval.stats[0],
-            'AP50': coco_eval.stats[1],
-        }
-
-        return metrics
-
+            
     def predict(self, image, conf):
         """
         Perform inference on a single image and return predictions in YOLO format,
         filtered by confidence score.
         """
         # Normalize the image
-        image = self.preprocess_image(image)
+        image = self._preprocess_image(image)
 
             
         if self.model_type == 'pytorch':
@@ -282,9 +153,217 @@ class ObjectDetector:
 
         boxes, classes, scores = boxes.tolist(), classes.tolist(), scores.tolist()
         return boxes, classes, scores
+    
+    def export_onnx(self, onnx_path):
+        dummy_input = torch.randn(1, 3, 640, 640).to(self.device)
+
+        # Export the model to ONNX format
+        torch.onnx.export(
+            self.model,            # Model to export
+            dummy_input,           # Example input for tracing
+            onnx_path,             # File to save the ONNX model
+            export_params=True,    # Store the trained parameter weights
+            do_constant_folding=True,  # Fold constant nodes for optimization
+            input_names=['input'],    # Input tensor name
+            output_names=['boxes', 'labels', 'scores'],  # Custom output names
+        )
 
 
-    def preprocess_image(self, image):
+
+    def _apply_nms(self, bboxes, classes, pscores):
+        """
+        Applies Non-Maximum Suppression (NMS) to the detected bounding boxes to remove overlapping boxes.
+        
+        Parameters
+        ----------
+        bboxes : np.ndarray
+            The detected bounding boxes.
+        classes : np.ndarray
+            The classes of the detected bounding boxes.
+        pscores : np.ndarray
+            The confidence scores for the detected bounding boxes.
+        
+        Returns
+        -------
+        final_bboxes : np.ndarray
+            The filtered bounding boxes after applying NMS.
+        final_classes : np.ndarray
+            The filtered classes after applying NMS.
+        final_pscores : np.ndarray
+            The filtered confidence scores after applying NMS.
+        """
+        if bboxes is None or (isinstance(bboxes, np.ndarray) and np.all(bboxes == None)):
+            return np.array([]), np.array([0]), np.array([0])
+    
+        # Convert to float numpy arrays
+        bboxes = np.array(bboxes).astype('float')
+        pscores = np.array(pscores).astype('float')
+        classes = np.array(classes).astype('float')
+
+        x_min = bboxes[:, 0]
+        y_min = bboxes[:, 1]
+        x_max = bboxes[:, 2]
+        y_max = bboxes[:, 3]
+
+        # Sort by confidence scores (pscores) in descending order
+        sorted_idx = pscores.argsort()[::-1]
+        bbox_areas = (x_max - x_min + 1) * (y_max - y_min + 1)
+
+        filtered = []
+        while len(sorted_idx) > 0:
+            rbbox_i = sorted_idx[0]
+            filtered.append(rbbox_i)
+
+            # Calculate overlaps (IoU) with remaining boxes
+            overlap_xmins = np.maximum(x_min[rbbox_i], x_min[sorted_idx[1:]])
+            overlap_ymins = np.maximum(y_min[rbbox_i], y_min[sorted_idx[1:]])
+            overlap_xmaxs = np.minimum(x_max[rbbox_i], x_max[sorted_idx[1:]])
+            overlap_ymaxs = np.minimum(y_max[rbbox_i], y_max[sorted_idx[1:]])
+
+            overlap_widths = np.maximum(0, (overlap_xmaxs - overlap_xmins + 1))
+            overlap_heights = np.maximum(0, (overlap_ymaxs - overlap_ymins + 1))
+            overlap_areas = overlap_widths * overlap_heights
+
+            # Intersection over Union (IoU) calculation
+            ious = overlap_areas / (bbox_areas[rbbox_i] + bbox_areas[sorted_idx[1:]] - overlap_areas)
+
+            # Filter out boxes with IoU greater than threshold
+            delete_idx = np.where(ious > self.nms_threshold)[0] + 1
+            delete_idx = np.concatenate(([0], delete_idx))
+
+            # Remove selected indices
+            sorted_idx = np.delete(sorted_idx, delete_idx)
+
+        # Return filtered bounding boxes, classes, and scores
+        return bboxes[filtered].astype('int'), classes[filtered].astype('int'), pscores[filtered]           
+
+    def _save_loss_model(self, save_path):
+        torch.save(self.model.state_dict(), f"{save_path}/best_loss_model_state_dict.pth")
+        torch.save(self.model, f"{save_path}/best_loss_model_full.pth")
+        
+    def _save_AP_model(self, save_path):
+        torch.save(self.model.state_dict(), f"{save_path}/best_AP_model_state_dict.pth")
+        torch.save(self.model, f"{save_path}/best_AP_model_full.pth")
+
+    def _evaluate(self, epoch, val_loader, save_path, gt_annotations_path):
+        self.model.eval()
+
+        results = []
+        collage_rows = []
+        max_images = 9  # Limit the collage to 9 images
+        max_images_per_row = 3  # Number of images per row
+        collage_size = 640  # Height of each image in the collage
+        black_image = np.zeros((collage_size, collage_size, 3), dtype=np.uint8)  # Placeholder for padding
+
+        with torch.no_grad():
+            image_count = 0
+            row_images = []  # Temporary holder for images in the current row
+
+            for images, targets in val_loader:
+                images = [image.to(self.device) for image in images]
+                outputs = self.model(images)
+
+                for j, output in enumerate(outputs):
+                    # Parse boxes, labels, and scores
+                    boxes = np.array([box.int().cpu().numpy() for box in output['boxes']])
+                    labels = np.array([int(label.cpu().numpy()) for label in output['labels']])
+                    scores = np.array([float(score.cpu().numpy()) for score in output['scores']])
+                    
+                    final_boxes, final_classes, final_scores = self._apply_nms(boxes, labels, scores)
+                    
+                    # Collect results for COCO evaluation (processed for all images)
+                    for box, score, label in zip(final_boxes, final_scores, final_classes):
+                        results.append({
+                            "image_id": targets[j]['image_id'].item(),
+                            "category_id": int(label),
+                            "bbox": [float(box[0]), float(box[1]), float(box[2] - box[0]), float(box[3] - box[1])],
+                            "score": float(score)
+                        })
+                        
+                    # Generate collage for first few images
+                    if image_count < max_images:
+                        img = self._prepare_image_for_collage(images[j], collage_size, final_boxes, final_classes, final_scores)
+                        row_images.append(img)
+
+                        # Add row to collage if filled
+                        if len(row_images) == max_images_per_row:
+                            collage_rows.append(np.hstack(row_images))
+                            row_images = []
+
+                        image_count += 1
+
+            # Add remaining images in the row (pad if necessary)
+            if row_images and image_count <= max_images:
+                while len(row_images) < max_images_per_row:
+                    row_images.append(black_image)
+                collage_rows.append(np.hstack(row_images))
+
+            # Save collage
+            if collage_rows:
+                collage = np.vstack(collage_rows)
+                collage_save_path = f"{save_path}/images/val_epoch_{epoch}_collage.jpg"
+                cv2.imwrite(collage_save_path, collage)
+                print(f"Collage saved at: {collage_save_path}")
+
+        # Save detection results for COCO evaluation
+        dt_results_path = f"{save_path}/evaluation_data/detections_epoch_{epoch}.json"
+        with open(dt_results_path, 'w') as f:
+            json.dump(results, f, indent=4)
+        print(f"Detection results saved at: {dt_results_path}")
+
+        # Skip COCO evaluation if no detections were made
+        if len(results) == 0:
+            print(f"No detections were made during evaluation of epoch {epoch}. Skipping COCO evaluation.")
+            return 0, 0
+
+        # Perform COCO evaluation
+        metrics = self._evaluate_with_coco(gt_annotations_path, dt_results_path, save_path, epoch)
+
+        print(f"Epoch [{epoch}] - mAP: {metrics['mAP']:.4f}, AP50: {metrics['AP50']:.4f}")
+        
+        return metrics['mAP'], metrics['AP50']
+
+    def _prepare_image_for_collage(self, image, collage_size, boxes, labels, scores):
+        """
+        Prepare a single image for the collage with annotations.
+        """
+        img = image.cpu().permute(1, 2, 0).numpy()  # [C, H, W] -> [H, W, C]
+        img = np.clip(img * 255, 0, 255).astype(np.uint8)
+        img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+
+        # Draw detections on the image
+        for box, label, score in zip(boxes, labels, scores):
+            box = box.astype(int)
+            cv2.rectangle(img, (box[0], box[1]), (box[2], box[3]), (255, 0, 0), 2)
+            cv2.putText(img, f"Class: {label}, Score: {score:.2f}",
+                        (box[0], box[1] - 10), cv2.FONT_HERSHEY_SIMPLEX,
+                        0.5, (0, 255, 0), 1)
+
+        # Resize image for collage
+        return cv2.resize(img, (collage_size, collage_size))
+
+    def _evaluate_with_coco(self, gt_annotations_path, dt_results_path, save_path, epoch):
+        # Load ground truth annotations
+        coco_gt = COCO(gt_annotations_path)
+
+        # Load detection results
+        coco_dt = coco_gt.loadRes(dt_results_path)
+ 
+        # Initialize COCO evaluation
+        coco_eval = COCOeval(coco_gt, coco_dt, iouType='bbox')
+        coco_eval.evaluate()
+        coco_eval.accumulate()
+        coco_eval.summarize()
+
+        # Extract metrics
+        metrics = {
+            'mAP': coco_eval.stats[0],
+            'AP50': coco_eval.stats[1],
+        }
+
+        return metrics
+
+    def _preprocess_image(self, image):
         """
         Normalize and preprocess the image for inference.
         """
@@ -317,24 +396,4 @@ class ObjectDetector:
         return image
 
         
-
-    def export_onnx(self, onnx_path):
-        dummy_input = torch.randn(1, 3, 640, 640).to(self.device)
-
-        # Export the model to ONNX format
-        torch.onnx.export(
-            self.model,            # Model to export
-            dummy_input,           # Example input for tracing
-            onnx_path,             # File to save the ONNX model
-            export_params=True,    # Store the trained parameter weights
-            do_constant_folding=True,  # Fold constant nodes for optimization
-            input_names=['input'],    # Input tensor name
-            output_names=['boxes', 'labels', 'scores'],  # Custom output names
-            # dynamic_axes={
-            #     'input': {0: 'batch_size'},    # Allow variable batch size
-            #     'boxes': {0: 'batch_size'},    # Variable output batch size
-            #     'labels': {0: 'batch_size'},
-            #     'scores': {0: 'batch_size'}
-            # }
-        )
-
+    

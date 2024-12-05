@@ -91,7 +91,6 @@ if __name__ == "__main__":
     num_classes = len(dataset.cat_id_to_label) + 1
     
     ################### Faster RCNN ################################
-
     model = fasterrcnn_mobilenet_v3_large_fpn(weights = None, num_classes=num_classes, weights_backbone = None,  trainable_backbone_layers = 6)
     # get the number of input features 
     in_features = model.roi_heads.box_predictor.cls_score.in_features
@@ -115,7 +114,7 @@ if __name__ == "__main__":
 
     model_path = './FasterRCNN_FPN_MobileNet'
 
-    detector = ObjectDetector.ObjectDetector(model, optimizer, lr_scheduler)
+    detector = ObjectDetector.TorchModel(model, optimizer, lr_scheduler)
 
     detector.train(data_loader, num_epochs=100, save_path=model_path, val_loader=data_loader_test)
         

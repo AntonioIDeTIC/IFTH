@@ -50,20 +50,22 @@ class CoreDetector:
         nms_threshold : float, optional
             The IoU threshold for Non-Maximum Suppression, by default 0.00001.
         """
-        self.model = YOLO(model_path) # YOLO CASE
-        # self.model = RTDETR(model_path) # RTDETR CASE
 
         self.model_id = model_id
-
-        ################### Faster RCNN ################################
-        # model = fasterrcnn_mobilenet_v3_large_fpn(weights = None, num_classes=2, weights_backbone = None)
-        # # get the number of input features 
-        # in_features = model.roi_heads.box_predictor.cls_score.in_features
-        # # define a new head for the detector with required number of classes
-        # model.roi_heads.box_predictor = FastRCNNPredictor(in_features, 2)
-
-        # model = ObjectDetector.ObjectDetector(model, model_type = 'pytorch')
-        # model.load_weights(model_path)
+        print(self.model_id)
+        if self.model_id == 'YOLO':
+            self.model = YOLO(model_path) # YOLO CASE
+        elif self.model_id == 'RTDETR' or self.model_id == 'YOLO-RTDETR':
+            self.model = RTDETR(model_path) # RTDETR CASE or yolov8n-rtdetr CASE
+        else:
+            ################## Faster RCNN ################################
+            self.model = fasterrcnn_mobilenet_v3_large_fpn(weights = None, num_classes=2, weights_backbone = None)
+            # get the number of input features 
+            in_features = self.model.roi_heads.box_predictor.cls_score.in_features
+            # define a new head for the detector with required number of classes
+            self.model.roi_heads.box_predictor = FastRCNNPredictor(in_features, 2)
+            self.model = ObjectDetector.TorchModel(self.model , model_type = 'pytorch')
+            self.model.load_weights(model_path)
 
         
         self.conf = conf
@@ -99,7 +101,7 @@ class CoreDetector:
         image = self._process_image(image_batch)
 
   
-        if self.model_id == 'YOLO' or self.model_id == 'RTDETR':
+        if self.model_id == 'YOLO' or self.model_id == 'RTDETR' or self.model_id == 'YOLO-RTDETR':
             boxes, clss, probs, prediction_time = self._ultralytics_detection(image)
         else:
             boxes, clss, probs, prediction_time = self._torch_detection(image)
@@ -228,9 +230,9 @@ class CoreDetector:
         final_pscores : np.ndarray
             The filtered confidence scores after applying NMS.
         """
-        if bboxes is None:
+        if bboxes is None or (isinstance(bboxes, np.ndarray) and np.all(bboxes == None)):
             return np.array([]), np.array([0]), np.array([0])
-
+    
         # Convert to float numpy arrays
         bboxes = np.array(bboxes).astype('float')
         pscores = np.array(pscores).astype('float')
@@ -291,7 +293,7 @@ class SecondaryDetector:
         Processes a stack of images using temporal processing to generate a composite image.
     """
     
-    def detect_anomaly(self, image_batch_files, images, n):
+    def detect_thermal_anomaly(self, image_batch_files, images, n):
         """
         Detects thermal anomalies in the input image batch by preprocessing images, 
         applying thresholding, and computing the top regions.
@@ -437,17 +439,14 @@ class SecondaryDetector:
         max_nad_image = torch.max(torch.stack(nad_images), dim=0)[0] if nad_images else torch.std(image_stack, dim=0)
 
         variance_image = torch.var(image_stack, dim=0)
-        std_image = torch.std(image_stack, dim=0)
 
         # Weighted combination of processed images
-        weight_nad = 0.1
-        weight_variance = 0.2
-        weight_std = 0.7
+        weight_nad = 0.75
+        weight_variance = 0.25
         
         combined_image = (
             weight_nad * max_nad_image +
-            weight_variance * variance_image +
-            weight_std * std_image
+            weight_variance * variance_image 
         )
 
         combined_image = torch.clamp(combined_image, 0, 65535).type(torch.float32)

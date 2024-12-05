@@ -37,10 +37,10 @@ def main():
     path = os.getcwd()
 
     
-    model_path = os.path.join('..', "models/yolov8n/weights/best.pt")
+    model_path = os.path.join('..', "...")
     dataset_path = os.path.join('..', "datasets/FLAME-T/Point E/")
 
-    model_id = 'YOLO' # 'RTDETR' or 'Faster-RCNN'
+    model_id = '...' # 'YOLO', 'RTDETR' or 'YOLO-RTDETR' or 'Faster-RCNN'
     core_detector = TA_detector.CoreDetector(model_path, model_id, conf=0.01)
     secondary_detector = TA_detector.SecondaryDetector()
 
@@ -139,10 +139,10 @@ def main():
                 continue
 
             # Perform anomaly detection using the CoreDetector (obj detection model) on 8-bit images
-            c_d_boxes, c_d_clss, c_d_probs, c_d_prediction_time, c_d_postprocessing_time, _3d_image = core_detector.detect_anomaly(_8bit_images)
+            c_d_boxes, c_d_clss, c_d_probs, c_d_prediction_time, c_d_postprocessing_time, _3d_image = core_detector.detect_thermal_anomaly(_8bit_images)
         
             # Perform secondary detection using the SecondaryDetector on 16-bit images
-            s_d_boxes, s_d_total_time = secondary_detector.detect_anomaly(batch, _16bit_images, n = 1)
+            s_d_boxes, s_d_total_time = secondary_detector.detect_thermal_anomaly(batch, _16bit_images, n = 1)
             
             # Apply general non-maximum suppression (NMS) on the detected boxes from both detectors
             final_boxes = utils.general_nms_python(c_d_boxes, s_d_boxes)
