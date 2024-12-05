@@ -41,6 +41,9 @@ The Nvidia Jetson Nano study carried out in this work was possible thanks to the
 * scikit-learn == 1.3.2
 * tabulate == 0.9.0
 * colorama == 0.4.6
+* torch == 2.1.1
+* torchinfo == 1.8.0
+* torchvision == 0.16.1
 
 ## 🚀 Code Overview
 <p align="justify">
