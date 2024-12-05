@@ -4,7 +4,7 @@ Welcome to the official repository for "Integrated Framework for Fire Detection 
 </p>
 
 <p align="justify"> 
-Note that you will need to <a href="https://docs.ultralytics.com/modes/train/" target="_blank">perform training</a> using the pre-trained models from  <a href="https://docs.ultralytics.com/models/" target="_blank">Ultralytics</a> to run this code effectively.
+Note that you will need to <a href="https://docs.ultralytics.com/modes/train/" target="_blank">perform training</a> using the pre-trained models from  <a href="https://docs.ultralytics.com/models/" target="_blank">Ultralytics</a> to run this code effectively. On the other hand, we provided a training script for the Faster-RCNN model discussed in the paper.
 </p>
 
 ## 📂 Dataset Access and Usage
