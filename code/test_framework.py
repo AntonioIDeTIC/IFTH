@@ -40,8 +40,8 @@ def main():
     model_path = os.path.join('..', "models/yolov8n/weights/best.pt")
     dataset_path = os.path.join('..', "datasets/FLAME-T/Point E/")
 
-    model_type = 'YOLO' # 'RTDETR' or 'Faster-RCNN'
-    core_detector = TA_detector.CoreDetector(model_path, model_type, conf=0.01)
+    model_id = 'YOLO' # 'RTDETR' or 'Faster-RCNN'
+    core_detector = TA_detector.CoreDetector(model_path, model_id, conf=0.01)
     secondary_detector = TA_detector.SecondaryDetector()
 
     # Define the image path in the dataset

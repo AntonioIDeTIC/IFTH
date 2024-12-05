@@ -37,7 +37,7 @@ class CoreDetector:
         Applies Non-Maximum Suppression (NMS) to refine bounding boxes based on IoU threshold.
     """
     
-    def __init__(self, model_path, model_type, conf, nms_threshold=0.00001):
+    def __init__(self, model_path, model_id, conf, nms_threshold=0.00001):
         """
         Initializes the CoreDetector class with the model, confidence threshold, and NMS IoU threshold.
         
@@ -53,7 +53,7 @@ class CoreDetector:
         self.model = YOLO(model_path) # YOLO CASE
         # self.model = RTDETR(model_path) # RTDETR CASE
 
-        self.model_type = model_type
+        self.model_id = model_id
 
         ################### Faster RCNN ################################
         # model = fasterrcnn_mobilenet_v3_large_fpn(weights = None, num_classes=2, weights_backbone = None)
@@ -63,7 +63,7 @@ class CoreDetector:
         # model.roi_heads.box_predictor = FastRCNNPredictor(in_features, 2)
 
         # model = ObjectDetector.ObjectDetector(model, model_type = 'pytorch')
-        # model.load_weights('......')
+        # model.load_weights(model_path)
 
         
         self.conf = conf
@@ -99,7 +99,7 @@ class CoreDetector:
         image = self._process_image(image_batch)
 
   
-        if self.model_type == 'YOLO' or self.model_type == 'RTDETR':
+        if self.model_id == 'YOLO' or self.model_id == 'RTDETR':
             boxes, clss, probs, prediction_time = self._ultralytics_detection(image)
         else:
             boxes, clss, probs, prediction_time = self._torch_detection(image)

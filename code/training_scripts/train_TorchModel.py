@@ -74,10 +74,10 @@ class COCODataset(Dataset):
 # Example Usage
 if __name__ == "__main__":
     import time
-    train_imgs_path = './dataset_v3_640/train/images'
-    valid_imgs_path = './dataset_v3_640/valid/images'
-    train_ann_file = './dataset_v3_640/train/corrected_labels.json'
-    valid_ann_file = './dataset_v3_640/valid/corrected_labels.json'
+    train_imgs_path = './dataset/train/images'
+    valid_imgs_path = './dataset/valid/images'
+    train_ann_file = './dataset/train/corrected_labels.json'
+    valid_ann_file = './dataset/valid/corrected_labels.json'
 
     dataset = COCODataset(train_imgs_path, train_ann_file, get_transform())
     dataset_test = COCODataset(valid_imgs_path, valid_ann_file, get_transform())
@@ -90,8 +90,9 @@ if __name__ == "__main__":
     
     num_classes = len(dataset.cat_id_to_label) + 1
     
+    ################### Faster RCNN ################################
+
     model = fasterrcnn_mobilenet_v3_large_fpn(weights = None, num_classes=num_classes, weights_backbone = None,  trainable_backbone_layers = 6)
-    
     # get the number of input features 
     in_features = model.roi_heads.box_predictor.cls_score.in_features
     # define a new head for the detector with required number of classes
@@ -107,7 +108,7 @@ if __name__ == "__main__":
     lr_scheduler = torch.optim.lr_scheduler.OneCycleLR(
         optimizer,
         max_lr=0.01,
-        steps_per_epoch=len(data_loader),  # Replace `dataloader` with your actual dataloader
+        steps_per_epoch=len(data_loader),  
         epochs=20
     )
     
