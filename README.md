@@ -31,6 +31,10 @@ Inside both folders a script called <code>yolo2coco.py</code> can be used to con
 <p align="justify"> The proposed FLAME-T dataset is available in its Mendeley data repository: <a href="https://data.mendeley.com/datasets/x6gty88k4f/1" target="_blank">FLAME-T</a>. Before running the provided examples, ensure that the dataset folder is included within this repository.
 </p> 
 
+<p align="justify"> 
+Please, in order to replicate our work we recommend to use the Open Neural Network Exchange (ONNX) export format to test the Rasbperry Pi 4 hardware. Consider to use the <a href="https://docs.ultralytics.com/modes/export/" target="_blank">model export format</a> following the official implementation made by Ultralytics. On the other hand, we provided the ONNX export script for the Faster-RCNN model discussed in the paper.
+</p>
+
 ## 🔧 Dependencies and Installation 
 * Python == 3.10.8
 * opencv-python-headless == 4.10.0.84
@@ -51,7 +55,7 @@ The methods developed in this work can be found in the code folder. The <code>ut
 </p>
 
 <p align="justify">
-The data augmentation process implemented in this work builds upon the methods developed by  <a href="https://github.com/muhammad-faizan-122/yolo-data-augmentation" target="_blank">muhammad-faizan-122</a>, whose repository provides a code example using the Almbumentations library. The <code>main.py</code> and <code>utils.py</code> given in this repository are modifications from his original code.
+The data augmentation process implemented in this work builds upon the methods developed by  <a href="https://github.com/muhammad-faizan-122/yolo-data-augmentation" target="_blank">muhammad-faizan-122</a>, whose repository provides a code example using the Almbumentations library. The <code>main.py</code> and <code>utils.py</code> given in this repository are modifications from his original code. 
 </p>
 
 <p align="justify">
