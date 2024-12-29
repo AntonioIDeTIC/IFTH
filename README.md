@@ -31,10 +31,6 @@ Inside both folders a script called <code>yolo2coco.py</code> can be used to con
 <p align="justify"> The proposed FLAME-T dataset is available in its Mendeley data repository: <a href="https://data.mendeley.com/datasets/x6gty88k4f/1" target="_blank">FLAME-T</a>. Before running the provided examples, ensure that the dataset folder is included within this repository.
 </p> 
 
-<p align="justify"> 
-The Nvidia Jetson Nano study carried out in this work was possible thanks to the docker image available at <a href="https://docs.ultralytics.com/es/guides/nvidia-jetson/#quick-start-with-docker" target="_blank">Ultralytics</a>. The <a href="https://docs.ultralytics.com/modes/export/" target="_blank">model export format</a> was also possible thanks to the official implementation made by Ultralytics.
-</p>
-
 ## 🔧 Dependencies and Installation 
 * Python == 3.10.8
 * opencv-python-headless == 4.10.0.84
