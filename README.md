@@ -4,7 +4,7 @@ Welcome to the official repository for "Integrated Framework for Fire Detection 
 </p>
 
 <p align="justify"> 
-Note that you will need to <a href="https://docs.ultralytics.com/modes/train/" target="_blank">perform training</a> using the pre-trained models from  <a href="https://docs.ultralytics.com/models/" target="_blank">Ultralytics</a> to run this code effectively. On the other hand, we provided a training script for the Faster-RCNN model discussed in the paper.
+Note that you will need to <a href="https://docs.ultralytics.com/modes/train/" target="_blank">perform training</a> using the pre-trained models from  <a href="https://docs.ultralytics.com/models/" target="_blank">Ultralytics</a> to run this code effectively. On the other hand, we provided a training script for the Faster-RCNN model discussed in the paper, this code is part of the <code>train_TorchModel.py</code> class inside the code/training_scripts folder.
 </p>
 
 ## 📂 Dataset Access and Usage
@@ -32,7 +32,7 @@ Inside both folders a script called <code>yolo2coco.py</code> can be used to con
 </p> 
 
 <p align="justify"> 
-To replicate our work, we recommend using the Open Neural Network Exchange (ONNX) export format for testing on Raspberry Pi 4 hardware. For guidance, consider following the official implementation by Ultralytics if you use their models, detailed in the <a href="https://docs.ultralytics.com/modes/export/" target="_blank">model export documentation</a>. Additionally, we have provided an ONNX export script specifically for the Faster-RCNN model discussed in the paper.
+To replicate our work, we recommend using the Open Neural Network Exchange (ONNX) export format for testing on Raspberry Pi 4 hardware. For guidance, consider following the official implementation by Ultralytics if you use their models, detailed in the <a href="https://docs.ultralytics.com/modes/export/" target="_blank">model export documentation</a>. Additionally, we have provided an ONNX export method for the Faster-RCNN model discussed in the paper, this code is part of the <code>ObjectDetector.py</code> class inside the code folder.
 </p>
 
 ## 🔧 Dependencies and Installation 
