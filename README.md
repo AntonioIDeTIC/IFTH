@@ -32,7 +32,7 @@ Inside both folders a script called <code>yolo2coco.py</code> can be used to con
 </p> 
 
 <p align="justify"> 
-Please, in order to replicate our work we recommend to use the Open Neural Network Exchange (ONNX) export format to test the Rasbperry Pi 4 hardware. Consider to use the <a href="https://docs.ultralytics.com/modes/export/" target="_blank">model export format</a> following the official implementation made by Ultralytics. On the other hand, we provided the ONNX export script for the Faster-RCNN model discussed in the paper.
+To replicate our work, we recommend using the Open Neural Network Exchange (ONNX) export format for testing on Raspberry Pi 4 hardware. For guidance, consider following the official implementation by Ultralytics if you use their models, detailed in the <a href="https://docs.ultralytics.com/modes/export/" target="_blank">model export documentation</a>. Additionally, we have provided an ONNX export script specifically for the Faster-RCNN model discussed in the paper.
 </p>
 
 ## 🔧 Dependencies and Installation 
