@@ -48,6 +48,7 @@ To replicate our work, we recommend using the Open Neural Network Exchange (ONNX
 * torchinfo == 1.8.0
 * torchvision == 0.16.1
 * onnxruntime == 1.20.1
+* pycocotools == 2.0.7
 
 ## 🚀 Code Overview
 <p align="justify">
