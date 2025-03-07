@@ -316,7 +316,7 @@ class SecondaryDetector:
         """
         # Step 1: Preprocessing
         preprocessing_start = time.time()
-        composite_image = self._temporal_processing(images)
+        composite_image = self._temporal_processing_np(images)
         
         # Step 2: Thresholding based on image batch
         max_pixel_value = np.max(composite_image)
@@ -410,6 +410,56 @@ class SecondaryDetector:
                           for _, (min_row, min_col, max_row, max_col) in top_n_regions]
         
         return np.array(bounding_boxes)
+
+    def _temporal_processing_np(self, images):
+        """
+        Equivalent implementation for _temporal_processing using only NumPy.
+        """
+        # Convert images to a numpy array (ensure float32 for consistency)
+        images = np.asarray(images, dtype=np.float32)
+        
+        weight_nad = 0.55
+        weight_variance = 0.25
+    
+        # weight_nad, weight_variance = weights
+    
+        if weight_variance == 0:
+            # nad_images = []
+            if images.shape[0] > 1 and weight_nad > 0:
+                # Compute absolute differences between consecutive images along axis 0
+                nad_diff = np.abs(np.diff(images, axis=0))
+                # for i in range(len(images) - 1):
+                #     nad_diff = np.abs(images[i] - images[i + 1])
+                #     nad_images.append(nad_diff)
+                max_nad_image = np.max(nad_diff, axis=0)
+            else:
+                max_nad_image = np.std(images, axis=0)
+            combined_image = weight_nad * max_nad_image
+    
+        elif weight_nad == 0:
+            variance_image = np.var(images, axis=0)
+            combined_image = weight_variance * variance_image
+            
+        else:
+            # nad_images = []
+            if images.shape[0] > 1 and weight_nad > 0:
+                # Compute absolute differences between consecutive images along axis 0
+                nad_diff = np.abs(np.diff(images, axis=0))
+                # for i in range(len(images) - 1):
+                #     nad_diff = np.abs(images[i] - images[i + 1])
+                #     nad_images.append(nad_diff)
+                max_nad_image = np.max(nad_diff, axis=0)
+            else:
+                max_nad_image = np.std(images, axis=0)
+            variance_image = np.var(images, axis=0)
+            combined_image = weight_nad * max_nad_image + weight_variance * variance_image
+    
+        # Clip combined image to the valid range.
+        combined_image = np.clip(combined_image, 0, 65535)
+        max_image = np.max(images, axis=0)
+        combined_image = np.clip(0.5 * (max_image + combined_image), 0, 65535)
+        
+        return combined_image.astype(np.uint16)
 
     def _temporal_processing(self, images):
         """
