@@ -457,9 +457,9 @@ class SecondaryDetector:
         # Clip combined image to the valid range.
         combined_image = np.clip(combined_image, 0, 65535)
         max_image = np.max(images, axis=0)
-        combined_image = np.clip(0.5 * (max_image + combined_image), 0, 65535)
+        final_img = np.clip(0.5 * (max_image + combined_image), 0, 65535)
         
-        return combined_image.astype(np.uint16)
+        return final_img.astype(np.uint16)
 
     def _temporal_processing(self, images):
         """
