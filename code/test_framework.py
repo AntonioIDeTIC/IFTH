@@ -57,16 +57,16 @@ def main():
     camera_parameters = {
         "Lepton": {
             "margin_range": 10,
-            "alpha_range_local": 0.35,
+            "alpha_range_local": 0.45,
             "alpha_range_global": 0.6
         },
         "A35": {
-            "margin_range": 50, 
+            "margin_range": 25, 
             "alpha_range_local": 0.25,  
-            "alpha_range_global": 0.425  
+            "alpha_range_global": 0.3  
         },
         "Tau": {
-            "margin_range": 160,  
+            "margin_range": 155,  
             "alpha_range_local": 0.15,  
             "alpha_range_global": 0.2  
         }
