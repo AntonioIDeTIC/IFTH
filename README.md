@@ -1,6 +1,6 @@
 # IFTH
 <p align="justify"> 
-Welcome to the official repository for "Integrated Framework for Fire Detection and Identification Using Thermal Imaging" (recently submitted). This repository contains all the necessary resources to replicate the experiments presented in our work.
+Welcome to the official repository for "Early Wildfire Detection and Identification in High Depth-of-Field Scenarios Using LWIR Thermal Imaging from Ground-Based Systems" (recently submitted). This repository contains all the necessary resources to replicate the experiments presented in our work.
 </p>
 
 <p align="justify"> 
@@ -9,14 +9,14 @@ Note that you will need to <a href="https://docs.ultralytics.com/modes/train/" t
 
 ## 📂 Dataset Access and Usage
 <p align="justify"> 
-The Thermal Anomalies (TA) dataset proposed in this work for the training stage uses some image pairs of two open-access datasets for research purposes: the FLIR ADAS, and the TarDAL M3FD. To replicate the results of this project, please download these datasets and merge them with the images and labels we provided. References for downloading and citing the datasets can be found in the paper. All image annotation this research team makes retains their original naming convention to ensure consistency. </p>
+The Thermal Anomalies (TA) dataset proposed in this work for the training stage uses some image pairs of two open-access datasets for research purposes: the FLIR ADAS and the TarDAL M3FD. To replicate the results of this project, please download these datasets and merge them with the images and labels we provided. References for downloading and citing the datasets can be found in the paper. All image annotation this research team makes retains their original naming convention to ensure consistency. </p>
 
 <p align="justify"> 
 On the other hand, our research team completely acquired the Fire’s Latent Activity Monitoring and Evaluation through Thermography (FLAME-T) dataset. 
 </p>
 
 <p align="justify"> 
-Inside both folders a script called <code>yolo2coco.py</code> can be used to convert the YOLO annotations to COCO format to train the Faster R-CNN implemented with PyTorch.
+Inside both folders, a script called <code>yolo2coco.py</code> can be used to convert the YOLO annotations to COCO format to train the Faster R-CNN implemented with PyTorch.
 </p>
 
 ### Terms and Conditions
@@ -52,11 +52,11 @@ To replicate our work, we recommend using the Open Neural Network Exchange (ONNX
 
 ## 🚀 Code Overview
 <p align="justify">
-The methods developed in this work can be found in the code folder. The <code>utils.py</code>, <code>metrics.py</code>, and <code>TA_detector.py</code> files implement state-of-the-art algorithms used in this work (IoU, mAP, F1, NMS algorithm, etc.), as well as the thermal anomalies detectors and the proposed identification algorithm. To run the example, the FLAME-T dataset must be downloaded and inside the "datasets" folder.
+The methods developed in this work can be found in the code folder. The <code>utils.py</code>, <code>metrics.py</code>, and <code>TA_detector.py</code> files implement state-of-the-art algorithms used in this work (IoU, mAP, F1, NMS algorithm, etc.), as well as the thermal anomalies detectors and the proposed identification algorithm. To run the example, the FLAME-T dataset must be downloaded and placed inside the "datasets" folder.
 </p>
 
 <p align="justify">
-The data augmentation process implemented in this work builds upon the methods developed by  <a href="https://github.com/muhammad-faizan-122/yolo-data-augmentation" target="_blank">muhammad-faizan-122</a>, whose repository provides a code example using the Almbumentations library. The <code>main.py</code> and <code>utils.py</code> given in this repository are modifications from his original code. 
+The data augmentation process implemented in this work builds upon the methods developed by  <a href="https://github.com/muhammad-faizan-122/yolo-data-augmentation" target="_blank">muhammad-faizan-122</a>, whose repository provides a code example using the Almbumentations library. The <code>main.py</code> and <code>utils.py</code> given in this repository are modifications of his original code. 
 </p>
 
 <p align="justify">
