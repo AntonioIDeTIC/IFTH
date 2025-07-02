@@ -1,6 +1,7 @@
 import numpy as np
 from sklearn.metrics import auc
 from scipy import interpolate
+import utils
 
 def remove_trailing_zeros_and_ones(recall, precision):
     """
@@ -130,3 +131,41 @@ def compute_ap(recall, precision):
     ap = auc(recall_101, precision_101)
     
     return ap, recall_101, precision_101
+
+def compute_map_50_95(results, iou_thresholds=np.arange(0.5, 1.0, 0.05)):
+    ap_list = []
+
+    for iou_thresh in iou_thresholds:
+        precision_arr = []
+        recall_arr = []
+        confidences = np.linspace(0.01, 1, 100)
+
+        for conf in confidences:
+            overall_confusion_matrix = np.zeros((2, 2), dtype=int)
+
+            for result in results:
+                yolo_boxes = result['yolo_boxes']
+                yolo_probs = result['yolo_probs']
+                label = result['unified_label']
+                backup_boxes = result['backup_boxes']
+
+                filtered_boxes = [box for box, prob in zip(yolo_boxes, yolo_probs) if prob >= conf]
+
+                confusion_matrix, _ = utils.verify_detection(filtered_boxes, label, iou_tresh=iou_thresh)
+                overall_confusion_matrix += confusion_matrix
+
+            tp = overall_confusion_matrix[1][1]
+            fp = overall_confusion_matrix[0][1]
+            fn = overall_confusion_matrix[1][0]
+
+            precision = tp / (tp + fp + 1e-6)
+            recall = tp / (tp + fn + 1e-6)
+
+            precision_arr.append(precision)
+            recall_arr.append(recall)
+
+        ap, recall_101, precision_101 = compute_ap(np.array(recall_arr), np.array(precision_arr))
+
+        ap_list.append(ap)
+
+    return np.mean(ap_list), ap_list
