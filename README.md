@@ -1,6 +1,6 @@
 # IFTH
 <p align="justify"> 
-Welcome to the official repository for "Early Wildfire Detection and Identification in High Depth-of-Field Scenarios Using LWIR Thermal Imaging from Ground-Based Systems" (recently submitted). This repository contains all the necessary resources to replicate the experiments presented in our work.
+Welcome to the official repository for "Early Wildfire Detection and Identification in High Depth-of-Field Scenarios Using LWIR Thermal Imaging from Ground-Based Systems" (in revision). This repository contains all the necessary resources to replicate the experiments presented in our work.
 </p>
 
 <p align="justify"> 
