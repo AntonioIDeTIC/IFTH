@@ -67,15 +67,32 @@ The <code>test_framework.py</code> file shows an example of thermal anomaly dete
     <img width="100%" src="images/framework_output.png"> 
 </p>
 
-##  BibTeX
-<!-- @InProceedings{aa,
-    author    = {aa},
-    title     = {aa},
-    date      = {2024}
-} -->
-
 ## 📜 License
 This project is released under the AGPL-3.0 license.
 
 ## 📧 Contact
 If you have any questions, please email antonio.galvan@ulpgc.es.
+
+## Citation
+> Antonio Galván-Hernández, Víctor Araña-Pulido, Francisco Cabrera-Almeida, Pedro Quintana-Morales (2026).  
+> Early wildfire detection and identification in high depth-of-field scenarios using LWIR thermal imaging from ground-based systems. *IEEE Transactions on Geoscience and Remote Sensing*, 64, 1–16.  
+> https://doi.org/10.1109/TGRS.2025.3644384
+
+[![DOI](https://img.shields.io/badge/DOI-10.1109%2FTGRS.2025.3644384-blue)](https://doi.org/10.1109/TGRS.2025.3644384)
+
+<details>
+<summary>BibTeX</summary>
+
+```bibtex
+@ARTICLE{11300919,
+  author  = {Galván-Hernández, Antonio and Araña-Pulido, Víctor and Cabrera-Almeida, Francisco and Quintana-Morales, Pedro},
+  title   = {Early Wildfire Detection and Identification in High Depth-of-Field Scenarios Using LWIR Thermal Imaging From Ground-Based Systems},
+  journal = {IEEE Transactions on Geoscience and Remote Sensing},
+  year    = {2026},
+  volume  = {64},
+  number  = {},
+  pages   = {1--16},
+  keywords= {Early detection and identification; high depth of field; incipient fire; raw long-wave infrared (LWIR) thermal image},
+  doi     = {10.1109/TGRS.2025.3644384},
+  url     = {https://ieeexplore.ieee.org/document/11300919}
+}
